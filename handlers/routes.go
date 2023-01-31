@@ -120,6 +120,7 @@ func Router() *mux.Router {
 	api.Handle("/api/services", scoped(apiAllServicesHandler)).Methods("GET")
 	api.Handle("/api/services", authenticated(apiCreateServiceHandler, false)).Methods("POST")
 	api.Handle("/api/services/{id}", scoped(apiServiceHandler)).Methods("GET")
+	api.Handle("/api/service-pages", scoped(apiServicesPagesHandler)).Methods("POST")
 	api.Handle("/api/reorder/services", authenticated(reorderServiceHandler, false)).Methods("POST")
 	api.Handle("/api/services/{id}", authenticated(apiServiceUpdateHandler, false)).Methods("POST")
 	api.Handle("/api/services/{id}", authenticated(apiServicePatchHandler, false)).Methods("PATCH")

@@ -8,7 +8,9 @@ import (
 	"github.com/statping-ng/statping-ng/types/hits"
 	"github.com/statping-ng/statping-ng/types/services"
 	"github.com/statping-ng/statping-ng/utils"
+	"math"
 	"net/http"
+	"strconv"
 )
 
 type serviceOrder struct {
@@ -268,13 +270,38 @@ func apiServiceDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 func apiAllServicesHandler(r *http.Request) interface{} {
 	var srvs []services.Service
-	for _, v := range services.AllInOrder() {
+	var dbServices []services.Service
+
+	param := r.URL.Query().Get("page")
+	if param != "" {
+		page, err := strconv.Atoi(param)
+		if err != nil {
+			panic(err)
+		}
+		dbServices = services.Paginated(page)
+	} else {
+		dbServices = services.AllInOrder()
+	}
+
+	for _, v := range dbServices {
 		if !v.Public.Bool && !IsUser(r) {
 			continue
 		}
 		srvs = append(srvs, v)
 	}
 	return srvs
+}
+
+func apiServicesPagesHandler(r *http.Request) interface{} {
+	var srvs []services.Service
+
+	for _, v := range services.AllInOrder() {
+		if !v.Public.Bool && !IsUser(r) {
+			continue
+		}
+		srvs = append(srvs, v)
+	}
+	return math.Floor(float64(len(srvs)) / 5.0)
 }
 
 func servicesDeleteFailuresHandler(w http.ResponseWriter, r *http.Request) {

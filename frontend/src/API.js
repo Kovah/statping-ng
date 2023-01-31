@@ -40,6 +40,14 @@ class Api {
     return axios.get('api/services').then(response => (response.data))
   }
 
+  async servicePages() {
+    return axios.get('api/services-pages').then(response => (response.data))
+  }
+
+  async servicesForPage(page) {
+    return axios.get('api/services', {params: {page: page}}).then(response => (response.data))
+  }
+
   async service(id) {
     return axios.get('api/services/' + id).then(response => (response.data))
   }

@@ -97,6 +97,13 @@ func AllInOrder() []Service {
 	return services
 }
 
+func Paginated(page int) []Service {
+	var services []Service
+	offset := (page - 1) * 5
+	db.Limit(5).Offset(offset).Find(&services)
+	return services
+}
+
 func (s *Service) Create() error {
 	err := db.Create(s)
 	if err.Error() != nil {
